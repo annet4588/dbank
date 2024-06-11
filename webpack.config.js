@@ -75,12 +75,12 @@ module.exports = {
   // webpack configuration. For example, if you are using React
   // modules and CSS as described in the "Adding a stylesheet"
   // tutorial, uncomment the following lines:
-  // module: {
-  //  rules: [
-  //    { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
-  //    { test: /\.css$/, use: ['style-loader','css-loader'] }
-  //  ]
-  // },
+  module: {
+   rules: [
+     { test: /\.(ts|tsx|jsx)$/, loader: "ts-loader" },
+     { test: /\.css$/, use: ['style-loader','css-loader'] }
+   ]
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.join(__dirname, asset_entry),
@@ -105,17 +105,19 @@ module.exports = {
   ],
   // proxy /api to port 8000 during development
   devServer: {
-    proxy: {
-      "/api": {
-        target: "http://localhost:8000",
-        changeOrigin: true,
-        pathRewrite: {
-          "^/api": "/api",
-        },
-      },
+    static: {
+      directory: path.join(__dirname, 'dist', frontendDirectory),
     },
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '/api' },
+      },
+    ],
     hot: true,
-    watchFiles: [path.resolve(__dirname, "src", frontendDirectory)],
+    watchFiles: [path.resolve(__dirname, 'src', frontendDirectory)],
     liveReload: true,
   },
 };
